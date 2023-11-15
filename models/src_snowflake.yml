@@ -1,8 +1,7 @@
 version: 2
 
 sources:
-
-  - name: sql_server_dbo # name of the source 
+  - name: sql_server_dbo # name of the source
     schema: sql_server_dbo # this is the schema our raw data lives in
     database: ALUMNO14_DEV_BRONZE_DB # this is the name of our database
 
@@ -12,15 +11,17 @@ sources:
       identifier: false
 
     freshness:
-      warn_after: {count: 24, period: hour}
-      error_after: {count: 48, period: hour}
+      warn_after: { count: 24, period: hour }
+      error_after: { count: 48, period: hour }
 
     tables:
-
       - name: addresses
         loaded_at_field: _fivetran_synced
         columns:
           - name: address_id
+            tests:
+              - not_null
+              - unique 
           - name: zip_code
           - name: country
           - name: address
@@ -28,11 +29,13 @@ sources:
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-
       - name: events
         loaded_at_field: _fivetran_synced
         columns:
           - name: event_id
+            tests:
+              - not_null
+              - unique 
           - name: page_url
           - name: event_type
           - name: user_id
@@ -43,11 +46,13 @@ sources:
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      
       - name: orders
         loaded_at_field: _fivetran_synced
         columns:
           - name: order_id
+            tests:
+              - not_null
+              - unique 
           - name: shipping_service
           - name: shipping_cost
           - name: address_id
@@ -63,43 +68,49 @@ sources:
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-
       - name: order_items
         loaded_at_field: _fivetran_synced
         columns:
-          - name: order_id
-          - name: product_id
+          - name: concat(order_id,product_id)
+            tests:
+              - not_null 
+              - unique
           - name: quantity
           - name: _fivetran_deleted
           - name: _fivetran_synced
-
-
 
       - name: products
         loaded_at_field: _fivetran_synced
         columns:
           - name: product_id
+            tests:
+              - not_null
+              - unique 
           - name: price
           - name: name
           - name: inventory
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-
       - name: promos
         loaded_at_field: _fivetran_synced
         columns:
           - name: promo_id
+            tests:
+              - not_null
+              - unique 
           - name: discount
           - name: status
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-
       - name: users
         loaded_at_field: _fivetran_synced
         columns:
           - name: user_id
+            tests:
+              - not_null
+              - unique 
           - name: update_at
           - name: address_id
           - name: last_name
@@ -110,12 +121,3 @@ sources:
           - name: email
           - name: _fivetran_deleted
           - name: _fivetran_synced
-
-
-
-
-
-
-
-
-
