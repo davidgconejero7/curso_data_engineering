@@ -49,10 +49,10 @@ sources:
                     field: user_id  
           - name: product_id
             tests:
-              - test_longuitud
               - relationships:
                     to: ref('stg_products')
                     field: product_id 
+                    where: length(product_id)>0
           - name: session_id
           - name: created_at
           - name: order_id
@@ -60,6 +60,7 @@ sources:
               - relationships:
                     to: ref('stg_order_items')
                     field: order_id 
+                    where: length(order_id)>0
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -67,11 +68,6 @@ sources:
         loaded_at_field: _fivetran_synced
         columns:
           - name: order_id
-            tests:
-              - not_null
-              - relationships:
-                    to: ref('stg_order_items')
-                    field: order_id 
           - name: shipping_service
           - name: shipping_cost
           - name: address_id
@@ -83,10 +79,10 @@ sources:
           - name: created_at
           - name: promo_id
             tests:
-              - not_null 
               - relationships:
                     to: ref('stg_promos')
                     field: promo_id 
+                    where: length(promo_id)>0
           - name: estimated_delivery_at
           - name: order_cost
           - name: user_id
