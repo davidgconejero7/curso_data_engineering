@@ -17,8 +17,12 @@ sources:
     tables:
       - name: addresses
         loaded_at_field: _fivetran_synced
+        description: >
+          Data about addresses in demo.
         columns:
           - name: address_id
+            description: >
+              UUID for each unique and not null address on platform.
             tests:
               - not_null
               - unique 
@@ -39,10 +43,23 @@ sources:
           - name: page_url
           - name: event_type
           - name: user_id
+            tests:
+              - relationships:
+                    to: ref('stg_users')
+                    field: user_id  
           - name: product_id
+            tests:
+              - test_longuitud
+              - relationships:
+                    to: ref('stg_products')
+                    field: product_id 
           - name: session_id
           - name: created_at
           - name: order_id
+            tests:
+              - relationships:
+                    to: ref('stg_order_items')
+                    field: order_id 
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -52,15 +69,32 @@ sources:
           - name: order_id
             tests:
               - not_null
-              - unique 
+              - relationships:
+                    to: ref('stg_order_items')
+                    field: order_id 
           - name: shipping_service
           - name: shipping_cost
           - name: address_id
+            tests:
+              - not_null
+              - relationships:
+                    to: ref('stg_addresses')
+                    field: address_id 
           - name: created_at
           - name: promo_id
+            tests:
+              - not_null 
+              - relationships:
+                    to: ref('stg_promos')
+                    field: promo_id 
           - name: estimated_delivery_at
           - name: order_cost
           - name: user_id
+            tests:
+              - not_null
+              - relationships:
+                    to: ref('stg_users')
+                    field: user_id 
           - name: order_total
           - name: delivered_at
           - name: tracking_id
@@ -113,6 +147,10 @@ sources:
               - unique 
           - name: update_at
           - name: address_id
+            tests: 
+              - relationships:
+                    to: ref('stg_addresses')
+                    field: address_id 
           - name: last_name
           - name: created_at
           - name: phone_number
