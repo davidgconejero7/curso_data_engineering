@@ -52,7 +52,7 @@ sources:
               - relationships:
                     to: ref('stg_products')
                     field: product_id 
-                    where: length(product_id)>0
+                    where: length(product_id)>0 or not null
           - name: session_id
           - name: created_at
           - name: order_id
@@ -60,7 +60,7 @@ sources:
               - relationships:
                     to: ref('stg_order_items')
                     field: order_id 
-                    where: length(order_id)>0
+                    where: length(order_id)>0 or not null
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -70,6 +70,9 @@ sources:
           - name: order_id
           - name: shipping_service
           - name: shipping_cost
+            tests:
+             - dbt_utils.expression_is_true:
+                   expression: ">=0"
           - name: address_id
             tests:
               - not_null
@@ -82,7 +85,7 @@ sources:
               - relationships:
                     to: ref('stg_promos')
                     field: promo_id 
-                    where: length(promo_id)>0
+                    where: length(promo_id)>0 or not null
           - name: estimated_delivery_at
           - name: order_cost
           - name: user_id
@@ -92,6 +95,9 @@ sources:
                     to: ref('stg_users')
                     field: user_id 
           - name: order_total
+            tests:
+             - dbt_utils.expression_is_true:
+                   expression: ">=0"
           - name: delivered_at
           - name: tracking_id
           - name: status
@@ -117,6 +123,9 @@ sources:
               - not_null
               - unique 
           - name: price
+            tests:
+             - dbt_utils.expression_is_true:
+                   expression: ">=0"
           - name: name
           - name: inventory
           - name: _fivetran_deleted
@@ -130,6 +139,9 @@ sources:
               - not_null
               - unique 
           - name: discount
+            tests:
+             - dbt_utils.expression_is_true:
+                   expression: ">=0"
           - name: status
           - name: _fivetran_deleted
           - name: _fivetran_synced
