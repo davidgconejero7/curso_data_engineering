@@ -14,6 +14,7 @@ renamed as (
         shipping_cost,
         address_id,
         created_at,
+        promo_id_key,
         decode(promo_id,'', 'not promo', promo_id) as promo_id,
         decode(estimated_delivery_at, NULL, '9999', estimated_delivery_at) as estimated_delivery_at,
         order_cost,
@@ -25,8 +26,8 @@ renamed as (
         _fivetran_deleted,
         _fivetran_synced
 
-    from source
 
 )
 
 select * from renamed
+
