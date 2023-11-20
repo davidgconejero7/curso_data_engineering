@@ -14,7 +14,7 @@ renamed as (
         shipping_cost,
         address_id,
         created_at,
-        decode(promo_id,'', 'not promo', promo_id) as promo_id,
+        decode(promo_id,'', '9999', promo_id),
         decode(estimated_delivery_at, NULL, '9999', estimated_delivery_at) as estimated_delivery_at,
         order_cost,
         user_id,
@@ -26,6 +26,22 @@ renamed as (
         _fivetran_synced
  
     from source
+
+)
+
+
+renamed casted as(
+    select
+    cast(order_id as varchar (50)) as id_order,
+    cast(shipping_service as varchar(50)),
+    cast(shipping_cost as float),
+    cast(address_id as varchar(50)),
+    cast(created_at as timestamp_ntz),
+    cast({{ dbt_utils.generate_surrogate_key(["promo_id"]) }} as varchar(50)) as id_promo,
+    cast(estimated_delivery_at as timestamp_ntz),
+    cast(order_cost as float),
+    cast(user_id as varchar(50)) as id_user,
+    cast
 
 )
 
