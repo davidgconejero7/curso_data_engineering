@@ -11,10 +11,10 @@ renamed as (
 
     select
         user_id,
-        updated_at,
+        cast(updated_at as timestamp_ntz) as updated_at_utc,
         address_id,
         last_name,
-        created_at,
+        cast(created_at as timestamp_ntz) as created_at_utc,
         phone_number,
         decode(total_orders,NULL, '0', total_orders) as total_orders,
         first_name,
