@@ -2,11 +2,7 @@ with
 
     source as (select * from {{ source("sql_server_dbo", "addresses") }}),
 
-    source as (
-
-    select * from {{ source('sql_server_dbo', 'users') }}
-
-    ),
+    source as ( select * from {{ source('sql_server_dbo', 'users') }} ),
 
     renamed as (
 

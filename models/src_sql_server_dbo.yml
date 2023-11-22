@@ -52,7 +52,7 @@ sources:
               - relationships:
                     to: ref('stg_products')
                     field: product_id 
-                    where: length(product_id)>0 or not null
+                    where: length(product_id)>0 or not null   # product_id <>'' or null
           - name: session_id
           - name: created_at
           - name: order_id
