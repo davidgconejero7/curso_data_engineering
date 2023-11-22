@@ -16,7 +16,7 @@ renamed as (
         last_name,
         created_at,
         phone_number,
-        total_orders,
+        decode(total_orders,NULL, '0', total_orders) as total_orders,
         first_name,
         email,
         _fivetran_deleted,
