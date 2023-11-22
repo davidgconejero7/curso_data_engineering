@@ -1,7 +1,6 @@
 with
 
     source as (select * from {{ source("sql_server_dbo", "promos") }}),
-    source as (select * from {{ source("sql_server_dbo", "orders") }}),
 
     renamed as (
 

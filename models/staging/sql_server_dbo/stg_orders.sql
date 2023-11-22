@@ -1,8 +1,6 @@
 with
     
-    source as (select * from {{ source("sql_server_dbo", "orders") }}),
-    source as (select * from {{ source("sql_server_dbo", "promos") }}),
- 
+     source as (select * from {{ source("sql_server_dbo", "orders") }}),
 
 
 renamed as (
@@ -17,7 +15,7 @@ renamed as (
         decode(estimated_delivery_at, NULL, '9999', estimated_delivery_at) as estimated_delivery_at,
         order_cost,
         user_id as id_user,
-        order_total as order_total_euros,
+        order_total,
         decode(delivered_at, NULL, '9999', delivered_at) as delivered_at,
         decode(tracking_id,'','not date',tracking_id) as id_tracking,
         status,
