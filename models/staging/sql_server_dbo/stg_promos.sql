@@ -1,18 +1,17 @@
 with 
 
-source as (
 
-    select * from {{ source('sql_server_dbo', 'promos') }}
 
-),
+    source as ( select * from {{ ref('base_promos') }}),
+
 
 renamed as (
 
     select
-        {{ dbt_utils.generate_surrogate_key(['promo_id']) }} as promo_id_key,
-        promo_id,
+        id_promo,
+        desc_id_promo,
         discount,
-        status,
+        id_status,
         _fivetran_deleted,
         _fivetran_synced
 

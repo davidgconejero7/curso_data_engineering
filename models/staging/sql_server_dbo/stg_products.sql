@@ -1,16 +1,13 @@
 with 
 
-source as (
+    source as (select * from {{ ref("base_products") }}),
 
-    select * from {{ source('sql_server_dbo', 'products') }}
-
-),
 
 renamed as (
 
     select
-        product_id as id_product,
-        price as price_euro,
+        id_product,
+        price_euro,
         name,
         inventory,
         _fivetran_deleted,

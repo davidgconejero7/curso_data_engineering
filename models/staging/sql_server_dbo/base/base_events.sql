@@ -7,7 +7,7 @@ with
 renamed as (
 
     select
-        event_id,
+        event_id as id_event,
         page_url,
         event_type,
         user_id as id_user,

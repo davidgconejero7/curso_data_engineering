@@ -1,22 +1,20 @@
 with 
 
-source  as (
 
-    select * from {{ source('sql_server_dbo', 'users') }}
+   source as ( select * from {{ ref('base_users') }}),
 
-),
 
 
 renamed as (
 
     select
-        user_id,
-        cast(updated_at as timestamp_ntz) as updated_at_utc,
-        address_id,
+        id_user,
+        updated_at_utc,
+        id_address,
         last_name,
-        cast(created_at as timestamp_ntz) as created_at_utc,
+        created_at_utc,
         phone_number,
-        decode(total_orders,NULL, '0', total_orders) as total_orders,
+        total_orders,
         first_name,
         email,
         _fivetran_deleted,

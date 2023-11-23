@@ -1,6 +1,6 @@
 with
     
-     source as (select * from {{ source("sql_server_dbo", "orders") }}),
+   source as (select * from {{ source("sql_server_dbo", "orders") }}),
 
 
 renamed as (
@@ -8,9 +8,9 @@ renamed as (
     select
         order_id as id_order,
         decode(shipping_service,'','not service', shipping_service)as shipping_service,
-        shipping_cost,
+        shipping_cost as shipping_cost_euros,
         address_id as id_address,
-        created_at,
+        cast(created_at as timestamp_ntz) as created_at_utc,
         decode(promo_id,'', '9999', promo_id) as id_promo,
         decode(estimated_delivery_at, NULL, '9999', estimated_delivery_at) as estimated_delivery_at,
         order_cost,
@@ -22,18 +22,20 @@ renamed as (
         _fivetran_deleted,
         _fivetran_synced 
  
-    from source
+ 
+    from  source
 
 ),
 
 
 renamed2 as(
-    select
+
+        select
         id_order,
         shipping_service,
-        shipping_cost as shipping_cost_euros,
+        shipping_cost_euros,
         id_address ,
-        cast(created_at as timestamp_ntz) as created_at_utc,
+        created_at_utc,
         cast( case 
                 when id_promo= '9999' then '9999'
                 else {{dbt_utils.generate_surrogate_key(["id_promo"]) }}

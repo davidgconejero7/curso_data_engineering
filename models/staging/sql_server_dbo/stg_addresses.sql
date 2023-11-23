@@ -1,21 +1,20 @@
 with
 
+   source as ( select * from {{ ref('base_addresses') }}),
+
    
-    renamed as (
+renamed as (
 
         select
-            addresses.address_id,
-            decode(users.user_id,null ,'not user', users.user_id)as user_id,
+            id_address,
             zipcode,
             country,
             address,
             state,
-            addresses._fivetran_deleted,
-            addresses._fivetran_synced
+            _fivetran_deleted,
+            _fivetran_synced
 
-        from {{ source("sql_server_dbo", "addresses") }} addresses
-        left join {{ source('sql_server_dbo', 'users') }} users
-        on addresses.address_id=users.address_id
+        from source
 
     )
 

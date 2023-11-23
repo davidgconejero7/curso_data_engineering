@@ -5,7 +5,7 @@ with
     renamed as (
 
         select
-            address_id,
+            address_id as id_address,
             zipcode,
             country,
             address,
