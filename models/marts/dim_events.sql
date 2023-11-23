@@ -23,6 +23,8 @@ renamed as (
     on events.id_product=products.id_product
     left join {{ ref('stg_order_items') }} order_items
     on events.id_order=order_items.id_order
+    left join {{ ref('stg_time')}} time
+    on events.created_at_utc=time.fecha_forecast
 )
 
 select * from renamed
