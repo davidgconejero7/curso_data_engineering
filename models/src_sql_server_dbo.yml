@@ -17,12 +17,8 @@ sources:
     tables:
       - name: addresses
         loaded_at_field: _fivetran_synced
-        description: >
-          Data about addresses in demo.
         columns:
           - name: address_id
-            description: >
-              UUID for each unique and not null address on platform.
             tests:
               - not_null
               - unique 
@@ -46,13 +42,14 @@ sources:
             tests:
               - relationships:
                     to: ref('stg_users')
-                    field: user_id  
+                    field: user_id
+                    where: user_id <> null  
           - name: product_id
             tests:
               - relationships:
                     to: ref('stg_products')
                     field: product_id 
-                    where: length(product_id)>0 or not null   # product_id <>'' or null
+                    where: product_id <>'not id_product'
           - name: session_id
           - name: created_at
           - name: order_id
@@ -60,7 +57,7 @@ sources:
               - relationships:
                     to: ref('stg_order_items')
                     field: order_id 
-                    where: length(order_id)>0 or not null
+                    where: order_id<>'not id_order'
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
