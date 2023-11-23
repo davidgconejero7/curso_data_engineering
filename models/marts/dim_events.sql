@@ -7,11 +7,11 @@ renamed as (
         event_id,
         page_url,
         event_type,
-        id_user,
+        users.id_user,
         products.id_product,
         id_session,
         events.created_at_utc,
-        id_order,
+        events.id_order,
         order_items.order_products,
         events._fivetran_deleted,
         events._fivetran_synced

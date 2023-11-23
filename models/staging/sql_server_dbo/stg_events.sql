@@ -19,5 +19,5 @@ renamed as (
         _fivetran_synced
 
     from source
-
+)
 select * from renamed
