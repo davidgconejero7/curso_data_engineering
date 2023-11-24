@@ -5,25 +5,29 @@ with
 renamed2 as(
 
         select
-        id_order,
+        orders.id_order,
         shipping_service,
         shipping_cost_euros,
-        id_address ,
+        addresses.id_address ,
         created_at_utc,
-         id_promo,
+        promos.id_promo,
         estimated_delivery_at_utc,
         order_cost_euros ,
         id_user,
         order_total_euros,
         delivered_at_utc,
         id_tracking,
-        id_status,
-        _fivetran_deleted,
-        _fivetran_synced
+        promos.id_status
 
     from {{ ref("stg_orders") }} orders
     left join {{ ref('stg_time')}} time
     on orders.created_at_utc=time.fecha_forecast
+    left join {{ ref('stg_addresses')}} addresses
+    on orders.id_address=addresses.id_address
+     left join {{ ref('stg_promos')}} promos
+    on orders.id_promo=promos.id_promo
+
+
 
 )
 
