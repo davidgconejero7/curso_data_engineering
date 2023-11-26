@@ -1,7 +1,7 @@
 
 with 
 
-renamed as (
+    renamed as (
 
     select
         id_event,
@@ -10,10 +10,9 @@ renamed as (
         users.id_user,
         products.id_product,
         id_session,
-        events.created_at_utc,
+        events.created_at_date,
         order_items.id_order,
         events.order_products,
-        events._fivetran_deleted,
         events._fivetran_synced
 
     from {{ref('stg_events') }} events 
@@ -24,7 +23,7 @@ renamed as (
     left join {{ ref('stg_order_items') }} order_items
     on events.id_order=order_items.id_order
     left join {{ ref('stg_time')}} time
-    on events.created_at_utc=time.fecha_forecast
+    on events.created_at_date=time.fecha_forecast
 )
 
 select * from renamed

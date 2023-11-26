@@ -1,9 +1,10 @@
 version: 2
 
 sources:
-  - name: sql_server_dbo # name of the source
+
+  - name: sql_server_dbo # name of the source 
     schema: sql_server_dbo # this is the schema our raw data lives in
-    database: "{{ env_var('DBT_ENVIRONMENTS') }}_BRONZE_DB"   # this is the name of our database
+    database: ALUMNO14_DEV_BRONZE_DB # this is the name of our database
 
     quoting:
       database: false
@@ -11,156 +12,175 @@ sources:
       identifier: false
 
     freshness:
-      warn_after: { count: 24, period: hour }
-      error_after: { count: 48, period: hour }
+      warn_after: {count: 24, period: day}
+      error_after: {count: 48, period: day}
+
+    loaded_at_field: _fivetran_synced
 
     tables:
-      - name: addresses
-        loaded_at_field: _fivetran_synced
+
+      - name: stg_addresses
         columns:
           - name: address_id
             tests:
+              - unique
               - not_null
-              - unique 
-          - name: zip_code
+          - name: zipcode
+            tests:
+              - not_null
           - name: country
+            tests:
+              - not_null
           - name: address
-          - name: state
+            tests:
+              - not_null
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      - name: events
-        loaded_at_field: _fivetran_synced
+      - name: stg_events
         columns:
           - name: event_id
             tests:
+              - unique
               - not_null
-              - unique 
           - name: page_url
+            tests:
+              - not_null
           - name: event_type
+            tests:
+              - not_null
           - name: user_id
             tests:
-              - relationships:
-                    to: ref('stg_users')
-                    field: user_id
-                    where: user_id <> not_null  
+              - not_null
           - name: product_id
             tests:
-              - relationships:
-                    to: ref('stg_products')
-                    field: product_id 
-                    where: product_id <>'not id_product'
+              - not_null
           - name: session_id
+            tests:
+              - not_null
           - name: created_at
+            tests:
+              - not_null
           - name: order_id
             tests:
-              - relationships:
-                    to: ref('stg_order_items')
-                    field: order_id 
-                    where: order_id<>'not id_order'
+              - not_null
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      - name: orders
-        loaded_at_field: _fivetran_synced
+
+      - name: stg_orders
         columns:
           - name: order_id
+            tests:
+              - unique
+              - not_null
           - name: shipping_service
           - name: shipping_cost
             tests:
-             - dbt_utils.expression_is_true:
-                   expression: ">=0"
+              - positive_values
+              - not_null
           - name: address_id
             tests:
               - not_null
-              - relationships:
-                    to: ref('stg_addresses')
-                    field: address_id 
           - name: created_at
-          - name: promo_id
             tests:
-              - relationships:
-                    to: ref('stg_promos')
-                    field: promo_id 
-                    where: length(promo_id)>0 or not null
+              - not_null
+          - name: promo_id
           - name: estimated_delivery_at
           - name: order_cost
+            tests:
+              - not_null
+              - positive_values
           - name: user_id
             tests:
               - not_null
-              - relationships:
-                    to: ref('stg_users')
-                    field: user_id 
           - name: order_total
             tests:
-             - dbt_utils.expression_is_true:
-                   expression: ">=0"
+              - not_null
+              - positive_values
           - name: delivered_at
           - name: tracking_id
           - name: status
           - name: _fivetran_deleted
           - name: _fivetran_synced
-
-      - name: order_items
-        loaded_at_field: _fivetran_synced
+          
+      - name: stg_order_items
         columns:
-          - name: concat(order_id,product_id)
+          - name: order_id
             tests:
-              - not_null 
-              - unique
+              - not_null
+          - name: product_id
+            tests:
+              - relationships:
+                 to: ref('stg_products')
+                 field: product_id
+              - not_null
           - name: quantity
+            tests:
+              - positive_values
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      - name: products
-        loaded_at_field: _fivetran_synced
+      - name: stg_products
         columns:
           - name: product_id
             tests:
+              - unique
               - not_null
-              - unique 
           - name: price
             tests:
-             - dbt_utils.expression_is_true:
-                   expression: ">=0"
+              - positive_values
+              - not_null
           - name: name
+            tests:
+              - not_null
           - name: inventory
+            tests:
+              - positive_values
+              - not_null
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      - name: promos
-        loaded_at_field: _fivetran_synced
+      - name: stg_promos
         columns:
           - name: promo_id
             tests:
+              - unique
               - not_null
-              - unique 
           - name: discount
             tests:
-             - dbt_utils.expression_is_true:
-                   expression: ">=0"
+              - positive_values
           - name: status
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      - name: users
-        loaded_at_field: _fivetran_synced
+      - name: stg_users
         columns:
           - name: user_id
             tests:
+              - unique
               - not_null
-              - unique 
-          - name: update_at
+          - name: updated_at
+            tests:
+              - not_null
           - name: address_id
-            tests: 
-              - relationships:
-                    to: ref('stg_addresses')
-                    field: address_id 
+            tests:
+              - not_null
           - name: last_name
+            tests:
+              - not_null
           - name: created_at
+            tests:
+              - not_null
           - name: phone_number
+            tests:
+              - not_null
           - name: total_orders
           - name: first_name
+            tests:
+              - not_null
           - name: email
+            tests:
+              - not_null
           - name: _fivetran_deleted
           - name: _fivetran_synced
