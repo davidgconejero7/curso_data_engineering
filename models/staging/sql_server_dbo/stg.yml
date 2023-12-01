@@ -4,7 +4,7 @@ sources:
 
   - name: sql_server_dbo # name of the source 
     schema: sql_server_dbo # this is the schema our raw data lives in
-    database: ALUMNO14_DEV_BRONZE_DB # this is the name of our database
+    database: ALUMNO14_DEV_SILVER_DB # this is the name of our database
 
     quoting:
       database: false
@@ -21,7 +21,7 @@ sources:
 
       - name: stg_addresses
         columns:
-          - name: address_id
+          - name: id_address
             tests:
               - unique
               - not_null
@@ -39,7 +39,7 @@ sources:
 
       - name: stg_events
         columns:
-          - name: event_id
+          - name: id_event
             tests:
               - unique
               - not_null
@@ -49,19 +49,22 @@ sources:
           - name: event_type
             tests:
               - not_null
-          - name: user_id
+          - name: id_user
             tests:
               - not_null
-          - name: product_id
+          - name: id_product
             tests:
               - not_null
-          - name: session_id
+          - name: id_session
             tests:
               - not_null
-          - name: created_at
+          - name: created_at_date
             tests:
               - not_null
-          - name: order_id
+          - name: created_at_time_utc
+            tests:
+              - not_null
+          - name: id_order
             tests:
               - not_null
           - name: _fivetran_deleted
@@ -70,50 +73,55 @@ sources:
 
       - name: stg_orders
         columns:
-          - name: order_id
+          - name: id_order
             tests:
               - unique
               - not_null
           - name: shipping_service
-          - name: shipping_cost
+          - name: shipping_cost_euros
             tests:
               - positive_values
               - not_null
-          - name: address_id
+          - name: id_address
             tests:
               - not_null
-          - name: created_at
+          - name: created_at_date
             tests:
               - not_null
-          - name: promo_id
-          - name: estimated_delivery_at
-          - name: order_cost
+          - name: created_at_time_utc
             tests:
               - not_null
-              - positive_values
-          - name: user_id
-            tests:
-              - not_null
-          - name: order_total
+          - name: id_promo
+          - name: estimated_delivery_at_date
+          - name: estimated_delivery_at_time_utc
+          - name: order_cost_euros
             tests:
               - not_null
               - positive_values
-          - name: delivered_at
-          - name: tracking_id
+          - name: id_user
+            tests:
+              - not_null
+          - name: order_total_euros
+            tests:
+              - not_null
+              - positive_values
+          - name: delivered_at_date
+          - name: delivered_at_time_utc
+          - name: id_tracking
           - name: status
           - name: _fivetran_deleted
           - name: _fivetran_synced
           
       - name: stg_order_items
         columns:
-          - name: order_id
+          - name: id_order
             tests:
               - not_null
-          - name: product_id
+          - name: id_product
             tests:
               - relationships:
                  to: ref('stg_products')
-                 field: product_id
+                 field: id_product
               - not_null
           - name: quantity
             tests:
@@ -123,11 +131,11 @@ sources:
 
       - name: stg_products
         columns:
-          - name: product_id
+          - name: id_product
             tests:
               - unique
               - not_null
-          - name: price
+          - name: price_euro
             tests:
               - positive_values
               - not_null
@@ -143,7 +151,7 @@ sources:
 
       - name: stg_promos
         columns:
-          - name: promo_id
+          - name: id_promo
             tests:
               - unique
               - not_null
@@ -156,20 +164,24 @@ sources:
 
       - name: stg_users
         columns:
-          - name: user_id
+          - name: id_user
             tests:
               - unique
               - not_null
-          - name: updated_at
+          - name: updated_at_date
             tests:
               - not_null
-          - name: address_id
+          - name: updated_at_time_utc
+            tests:
+              - not_null
+          - name: id_address
             tests:
               - not_null
           - name: last_name
             tests:
               - not_null
-          - name: created_at
+          - name: created_at_date
+          - name: created_at_time_utc
             tests:
               - not_null
           - name: phone_number

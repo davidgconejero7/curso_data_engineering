@@ -8,7 +8,7 @@ with
         page_url,
         event_type,
         users.id_user,
-        products.id_product,
+        events.id_product,
         id_session,
         events.created_at_date,
         order_items.id_order,

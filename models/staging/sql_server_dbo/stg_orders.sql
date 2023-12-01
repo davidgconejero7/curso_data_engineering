@@ -19,7 +19,7 @@ renamed as (
         user_id as id_user,
         order_total,
         cast(delivered_at as date) as delivered_at_date,
-         cast(delivered_at as time) as delivered_at_time_utc,
+        cast(delivered_at as time) as delivered_at_time_utc,
         decode(tracking_id,'','not date',tracking_id) as id_tracking,
         status,
         _fivetran_deleted,

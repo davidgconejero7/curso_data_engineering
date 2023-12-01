@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: sql_server_dbo # name of the source
     schema: sql_server_dbo # this is the schema our raw data lives in
-    database: "{{ env_var('DBT_ENVIRONMENTS') }}_BRONZE_DB"   # this is the name of our database
+    database: ALUMNO14_DEV_BRONZE_DB   # this is the name of our database
 
     quoting:
       database: false
@@ -41,23 +41,22 @@ sources:
           - name: user_id
             tests:
               - relationships:
-                    to: ref('stg_users')
+                    to: ref('users')
                     field: user_id
-                    where: user_id <> not_null  
+                    where: id_user<>0 or not_null
           - name: product_id
             tests:
               - relationships:
-                    to: ref('stg_products')
-                    field: product_id 
-                    where: product_id <>'not id_product'
+                    to: ref('products')
+                    field: product_id <>0 or null
           - name: session_id
           - name: created_at
           - name: order_id
             tests:
               - relationships:
-                    to: ref('stg_order_items')
+                    to: ref('order_items')
                     field: order_id 
-                    where: order_id<>'not id_order'
+                    where: order_id<>0 or null
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -74,22 +73,22 @@ sources:
             tests:
               - not_null
               - relationships:
-                    to: ref('stg_addresses')
+                    to: ref('addresses')
                     field: address_id 
           - name: created_at
           - name: promo_id
             tests:
               - relationships:
-                    to: ref('stg_promos')
+                    to: ref('promos')
                     field: promo_id 
-                    where: length(promo_id)>0 or not null
+                    where: promo_id<>0 or null
           - name: estimated_delivery_at
           - name: order_cost
           - name: user_id
             tests:
               - not_null
               - relationships:
-                    to: ref('stg_users')
+                    to: ref('users')
                     field: user_id 
           - name: order_total
             tests:
@@ -154,7 +153,7 @@ sources:
           - name: address_id
             tests: 
               - relationships:
-                    to: ref('stg_addresses')
+                    to: ref('addresses')
                     field: address_id 
           - name: last_name
           - name: created_at
