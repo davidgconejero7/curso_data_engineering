@@ -3,27 +3,39 @@ with
 
    source as ( select * from {{ ref('stg_users') }}),
 
+total_order as(
+    select 
+    id_user,
+    count(distinct(id_order)) as total_order
+    from {{ ref('stg_orders') }} 
+    group by id_user
+),
 
 
 renamed as (
 
     select
-        id_user,
+        users.id_user,
         updated_at_date,
         updated_at_time_utc,
-        id_address,
+        users.id_address,
         last_name,
-        created_at_date,
-        created_at_time_utc,
+        total_order,
+        users.created_at_date,
+        users.created_at_time_utc,
         phone_number,
-        total_orders,
         first_name,
         email,
-        _fivetran_synced
+        users._fivetran_synced
 
     from {{ ref('stg_users') }} users
     left join {{ ref('stg_time')}} time
     on users.created_at_date=time.fecha_forecast
+    left join {{ ref("stg_orders") }} orders
+    on users.id_user=orders.id_user
+    left join total_order
+    on users.id_user=total_order.id_user
+
 
 )
 

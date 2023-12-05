@@ -1,0 +1,99 @@
+version: 2
+
+sources:
+
+  - name: sql_server_dbo # name of the source 
+    schema: sql_server_dbo # this is the schema our raw data lives in
+    database: ALUMNO14_DEV_GOLD_DB # this is the name of our database
+
+    quoting:
+      database: false
+      schema: false
+      identifier: false
+
+    freshness:
+      warn_after: {count: 24, period: day}
+      error_after: {count: 48, period: day}
+
+    loaded_at_field: _fivetran_synced
+
+    tables:
+
+      - name: dim_addresses
+        columns:
+          - name: id_address
+          - name: zipcode
+          - name: country
+          - name: address
+          - name: _fivetran_synced
+
+      - name: stg_events
+        columns:
+          - name: id_event
+          - name: page_url
+          - name: event_type
+          - name: id_user
+          - name: id_product
+          - name: id_session
+          - name: created_at_date
+          - name: created_at_time_utc
+          - name: id_order
+          - name: _fivetran_synced
+
+
+      - name: stg_orders
+        columns:
+          - name: id_order
+          - name: shipping_service
+          - name: shipping_cost_euros
+          - name: id_address
+          - name: created_at_date
+          - name: created_at_time_utc
+          - name: id_promo
+          - name: estimated_delivery_at_date
+          - name: estimated_delivery_at_time_utc
+          - name: order_cost_euros
+          - name: id_user
+          - name: order_total_euros
+          - name: delivered_at_date
+          - name: delivered_at_time_utc
+          - name: id_tracking
+          - name: status
+          - name: _fivetran_synced
+          
+      - name: stg_order_items
+        columns:
+          - name: id_order
+          - name: id_product
+          - name: quantity
+          - name: _fivetran_synced
+
+      - name: stg_products
+        columns:
+          - name: id_product
+          - name: price_euro
+          - name: name
+          - name: inventory
+          - name: _fivetran_synced
+
+      - name: stg_promos
+        columns:
+          - name: id_promo
+          - name: discount
+          - name: status
+          - name: _fivetran_synced
+
+      - name: stg_users
+        columns:
+          - name: id_user
+          - name: updated_at_date
+          - name: updated_at_time_utc
+          - name: id_address
+          - name: last_name
+          - name: created_at_date
+          - name: created_at_time_utc
+          - name: phone_number
+          - name: total_orders
+          - name: first_name
+          - name: email
+          - name: _fivetran_synced

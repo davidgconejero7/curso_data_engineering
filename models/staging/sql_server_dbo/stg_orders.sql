@@ -20,7 +20,7 @@ renamed as (
         order_total,
         cast(delivered_at as date) as delivered_at_date,
         cast(delivered_at as time) as delivered_at_time_utc,
-        decode(tracking_id,'','not date',tracking_id) as id_tracking,
+        decode(tracking_id,'','not generate yet',tracking_id) as id_tracking,
         status,
         _fivetran_deleted,
         _fivetran_synced 

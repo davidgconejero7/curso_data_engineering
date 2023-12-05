@@ -24,6 +24,24 @@ with
     on events.id_order=order_items.id_order
     left join {{ ref('stg_time')}} time
     on events.created_at_date=time.fecha_forecast
+),
+
+
+        not_null as (
+
+    select
+        id_event,
+        page_url,
+        event_type,
+        id_user,
+        id_product,
+        id_session,
+        created_at_date,
+        decode(id_order, null , 'not orders', id_order) as id_order,
+        order_products,
+        _fivetran_synced
+
+    from renamed
 )
 
-select * from renamed
+select* from not_null

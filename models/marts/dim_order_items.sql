@@ -11,7 +11,6 @@ renamed as (
         id_product,
         id_order,
         quantity,
-        _fivetran_deleted,
         _fivetran_synced
 
     from {{ ref('stg_order_items') }} order_items
