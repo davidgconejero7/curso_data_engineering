@@ -43,7 +43,7 @@ sources:
               - relationships:
                     to: ref('users')
                     field: user_id
-                    where: id_user<>0 or not_null
+                    where: user_id<>0 or not_null
           - name: product_id
             tests:
               - relationships:
@@ -64,6 +64,9 @@ sources:
         loaded_at_field: _fivetran_synced
         columns:
           - name: order_id
+            tests:
+              - not_null
+              - unique 
           - name: shipping_service
           - name: shipping_cost
             tests:

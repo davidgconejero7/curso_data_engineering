@@ -9,7 +9,6 @@ with
             desc_id_promo,
             discount,
             id_status,
-            _fivetran_deleted,
             _fivetran_synced
     
         from source

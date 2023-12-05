@@ -11,6 +11,7 @@ with
         events.id_product,
         id_session,
         events.created_at_date,
+        events.created_at_time_utc,
         order_items.id_order,
         events.order_products,
         events._fivetran_synced
@@ -37,6 +38,7 @@ with
         id_product,
         id_session,
         created_at_date,
+        created_at_time_utc,
         decode(id_order, null , 'not orders', id_order) as id_order,
         order_products,
         _fivetran_synced

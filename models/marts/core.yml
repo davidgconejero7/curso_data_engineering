@@ -22,78 +22,178 @@ sources:
       - name: dim_addresses
         columns:
           - name: id_address
+            tests:
+              - not_null
+              - unique 
           - name: zipcode
+            tests:
+              - positive_values
           - name: country
           - name: address
+          - name: state
           - name: _fivetran_synced
 
-      - name: stg_events
+      - name: dim_events
         columns:
           - name: id_event
+            tests:
+              - not_null
+              - unique 
           - name: page_url
           - name: event_type
           - name: id_user
+            tests:
+              - relationships:
+                    to: ref('dim_users')
+                    field: id_user
+                    where: id_user<>0 or not_null
           - name: id_product
+            tests:
+              - relationships:
+                    to: ref('dim_products')
+                    field: id_ product
+                    where: id_product<>0 or not_null
           - name: id_session
+            tests:
+              - unique
+              - not null
           - name: created_at_date
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: fecha_forecast
+                    where: fecha_forecast<>0 or not_null
           - name: created_at_time_utc
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: fecha_forecast
+                    where: fecha_forecast<>0 or not_null
           - name: id_order
+            tests:
+              - relationships:
+                    to: ref('fact_orders')
+                    field: id_order
+                    where: id_order<>0 or not_null
+          - name: order_products
           - name: _fivetran_synced
 
 
-      - name: stg_orders
+      - name: fact_orders
         columns:
           - name: id_order
-          - name: shipping_service
-          - name: shipping_cost_euros
-          - name: id_address
-          - name: created_at_date
-          - name: created_at_time_utc
+            tests:
+              - relationships:
+                    to: ref('dim_order_items')
+                    field: id_order
+                    where: id_order<>0 or not_null
           - name: id_promo
-          - name: estimated_delivery_at_date
-          - name: estimated_delivery_at_time_utc
-          - name: order_cost_euros
+            tests:
+              - relationships:
+                    to: ref('dim_promos')
+                    field: id_promo
+                    where: id_promo<>0 or not_null  
+          - name: id_status
+            tests:
+              - relationships:
+                    to: ref('dim_status')
+                    field: id_status
+                    where: id_status<>0 or not_null
           - name: id_user
+            tests:
+              - relationships:
+                    to: ref('dim_users')
+                    field: id_user
+                    where: id_user<>0 or not_null
+          - name: order_cost_euros
+            tests:
+              - positive_values
           - name: order_total_euros
-          - name: delivered_at_date
-          - name: delivered_at_time_utc
-          - name: id_tracking
-          - name: status
+            tests:
+              - positive_values
           - name: _fivetran_synced
+
           
-      - name: stg_order_items
+      - name: dim_order_items
         columns:
+          - name: order_products
+            tests:
+              - unique
+              - not null
           - name: id_order
           - name: id_product
           - name: quantity
+            tests:
+              - positive_values
           - name: _fivetran_synced
 
-      - name: stg_products
+      - name: dim_products
         columns:
           - name: id_product
+            tests:
+              - unique
+              - not null    
           - name: price_euro
+            tests:
+              - positive_values
           - name: name
           - name: inventory
+            tests:
+              - positive_values
           - name: _fivetran_synced
 
-      - name: stg_promos
+      - name: dim_promos
         columns:
           - name: id_promo
+          - name: desc_id_promo
           - name: discount
           - name: status
           - name: _fivetran_synced
 
-      - name: stg_users
+
+      - name: dim_users
         columns:
           - name: id_user
           - name: updated_at_date
           - name: updated_at_time_utc
           - name: id_address
           - name: last_name
+          - name: total_order
           - name: created_at_date
           - name: created_at_time_utc
           - name: phone_number
-          - name: total_orders
           - name: first_name
           - name: email
           - name: _fivetran_synced
+
+          
+      - name: dim_time
+        columns:
+          - name: fecha_forecast
+          - name: id_date
+          - name: anio
+          - name: mes
+          - name: desc_mes
+          - name: id_anio_mes
+          - name: dia_previo
+          - name: anio_semana_dia
+          - name: semana
+
+     
+      - name: dim_shipping
+        columns:
+          - name: id_order
+          - name: shipping_service
+          - name: shipping_cost_euros
+          - name: id_address
+          - name: id_tracking
+          - name: id_status
+          - name: created_at_date
+          - name: created_at_time_utc
+          - name: estimated_delivery_at_date
+          - name: estimated_delivery_at_time_utc
+
+
+      - name: dim_status
+        columns:
+          - name: id_status

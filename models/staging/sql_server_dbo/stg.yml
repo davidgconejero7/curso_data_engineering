@@ -15,7 +15,6 @@ sources:
       warn_after: {count: 24, period: day}
       error_after: {count: 48, period: day}
 
-    loaded_at_field: _fivetran_synced
 
     tables:
 
@@ -34,6 +33,7 @@ sources:
           - name: address
             tests:
               - not_null
+          - name: state
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -67,6 +67,7 @@ sources:
           - name: id_order
             tests:
               - not_null
+          - name: order_products
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -196,3 +197,16 @@ sources:
               - not_null
           - name: _fivetran_deleted
           - name: _fivetran_synced
+
+
+      - name: stg_time
+        columns:
+          - name: fecha_forecast
+          - name: id_date
+          - name: anio
+          - name: mes
+          - name: desc_mes
+          - name: id_anio_mes
+          - name: dia_previo
+          - name: anio_semana_dia
+          - name: semana
