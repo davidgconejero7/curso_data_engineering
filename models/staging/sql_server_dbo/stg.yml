@@ -199,14 +199,18 @@ sources:
           - name: _fivetran_synced
 
 
+      - name: stg_date
+        columns:
+          - name: date
+          - name: day_of_week
+          - name: day_of_month
+          - name: week_of_year
+          - name: month_of_year
+          - name: year_number
+          - name: quarter_of_the_year
+        
+
       - name: stg_time
         columns:
-          - name: fecha_forecast
-          - name: id_date
-          - name: anio
-          - name: mes
-          - name: desc_mes
-          - name: id_anio_mes
-          - name: dia_previo
-          - name: anio_semana_dia
-          - name: semana
+          - name: time
+          - name: hour_time

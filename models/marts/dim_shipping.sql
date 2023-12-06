@@ -6,6 +6,7 @@ with
 
         select
         id_order,
+        id_shipping_service,
         shipping_service,
         shipping_cost_euros,
         id_address,
@@ -16,7 +17,9 @@ with
         estimated_delivery_at_date,
         estimated_delivery_at_time_utc
     
-        from source
+        from {{ ref("stg_orders") }} orders 
+        left join {{ ref("stg_date") }} date
+        on orders.created_at_date=date.date
     
     )
  

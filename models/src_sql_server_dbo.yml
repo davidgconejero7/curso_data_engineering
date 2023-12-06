@@ -16,16 +16,22 @@ sources:
 
     tables:
       - name: addresses
+        description: "Tabla de direcciones"
         loaded_at_field: _fivetran_synced
         columns:
           - name: address_id
+            description: "Identificador unico de las direcciones"
             tests:
               - not_null
               - unique 
           - name: zip_code
+            description: "Código postal de las direcciones"
           - name: country
+            description: "País donde se encuentran las direcciones"
           - name: address
+            description: "Nombre de la calle de las direcciones"
           - name: state
+            description: "Estado en el que se encuentran las direcciones"
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -33,30 +39,37 @@ sources:
         loaded_at_field: _fivetran_synced
         columns:
           - name: event_id
+            description: "Identificador único del evento"
             tests:
               - not_null
-              - unique 
-          - name: page_url
+              - unique
           - name: event_type
+          - name: page_url
+            description: "Identificador del tipo de evento"
           - name: user_id
+            description: "Usuario que ha realizado el tipo de evento"
             tests:
               - relationships:
                     to: ref('users')
                     field: user_id
-                    where: user_id<>0 or not_null
+                    where: user_id<>0 or not null
           - name: product_id
+            description: "Identificador del producto para nuestro evento"
             tests:
               - relationships:
                     to: ref('products')
-                    field: product_id <>0 or null
+                    field: product_id <>0 or not null
           - name: session_id
+            description: "Sesión en la cual se realiza el evento"
           - name: created_at
+            description: "Fecha de creación"
           - name: order_id
+            description: "Identificador de order para nuestro evento"
             tests:
               - relationships:
                     to: ref('order_items')
                     field: order_id 
-                    where: order_id<>0 or null
+                    where: order_id<>0 or not null
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -64,29 +77,37 @@ sources:
         loaded_at_field: _fivetran_synced
         columns:
           - name: order_id
+            description: "Identificador para un determinado pedido"
             tests:
               - not_null
               - unique 
           - name: shipping_service
+            description: "Nombre de la compañia de envíos"
           - name: shipping_cost
+            description: "Costo total de la compañia de sus envíos"
             tests:
              - dbt_utils.expression_is_true:
                    expression: ">=0"
           - name: address_id
+            description: "Identificador de address para esta order concreta"
             tests:
               - not_null
               - relationships:
                     to: ref('addresses')
                     field: address_id 
           - name: created_at
+            description: "Fecha en la que se creo la order"
           - name: promo_id
+            description: "Identificador de la promoción que se aplica a la order"
             tests:
               - relationships:
                     to: ref('promos')
                     field: promo_id 
-                    where: promo_id<>0 or null
+                    where: promo_id<>0 or not null
           - name: estimated_delivery_at
+            description: "Fecha en la que se espera la llegada de la order"
           - name: order_cost
+            description: "Coste de la order"
           - name: user_id
             tests:
               - not_null
@@ -94,12 +115,16 @@ sources:
                     to: ref('users')
                     field: user_id 
           - name: order_total
+            description: "Coste toal de la order, incluido el envio"
             tests:
              - dbt_utils.expression_is_true:
                    expression: ">=0"
           - name: delivered_at
+            description: "Fecha de llegada de la order"
           - name: tracking_id
+            description: " Identificador de seguimiento para nuestra order"
           - name: status
+            description: "Estado de nuestra order"
           - name: _fivetran_deleted
           - name: _fivetran_synced
 

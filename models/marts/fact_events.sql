@@ -23,8 +23,8 @@ with
     on events.id_product=products.id_product
     left join {{ ref('stg_order_items') }} order_items
     on events.id_order=order_items.id_order
-    left join {{ ref('stg_time')}} time
-    on events.created_at_date=time.fecha_forecast
+    left join {{ ref('stg_date')}} date
+    on events.created_at_date=date.date
 ),
 
 

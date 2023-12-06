@@ -29,8 +29,8 @@ renamed as (
         users._fivetran_synced
 
     from {{ ref('stg_users') }} users
-    left join {{ ref('stg_time')}} time
-    on users.created_at_date=time.fecha_forecast
+    left join {{ ref('stg_date')}} date
+    on users.created_at_date=date.date
     left join {{ ref("stg_orders") }} orders
     on users.id_user=orders.id_user
     left join total_order

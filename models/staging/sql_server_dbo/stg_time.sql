@@ -1,22 +1,19 @@
-with date as (
-{{ dbt_utils.date_spine(
-    datepart="day",
-    start_date="cast('2020-01-01' as date)",
-    end_date="cast('2024-01-01' as date)",
+{{ config(
+  materialized='table'
+) }}
+
+WITH stg_time AS 
+(
+    {{ dbt_utils.date_spine(
+    datepart="second",
+    start_date="cast('00:00:00' as time)",
+    end_date="cast('23:59:59' as time)"
    )
-}} 
+}}
 )
 
-select
-      date_day as fecha_forecast
-    , year(date_day)*10000+month(date_day)*100+day(date_day) as id_date
-    , year(date_day) as anio
-    , month(date_day) as mes
-    ,monthname(date_day) as desc_mes
-    , year(date_day)*100+month(date_day) as id_anio_mes
-    , date_day-1 as dia_previo
-    , year(date_day)||weekiso(date_day)||dayofweek(date_day) as anio_semana_dia
-    , weekiso(date_day) as semana
-from date
-order by
-    date_day desc
+SELECT
+      date_second AS time,
+      extract (hour from date_second) AS hour_time
+
+FROM stg_time

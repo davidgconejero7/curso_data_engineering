@@ -36,6 +36,7 @@ renamed2 as(
         select
         id_order,
         shipping_service,
+        {{ dbt_utils.generate_surrogate_key([ ('shipping_service')]) }} as id_shipping_service,
         shipping_cost_euros,
         id_address,
         created_at_date,
