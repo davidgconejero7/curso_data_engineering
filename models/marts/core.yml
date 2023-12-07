@@ -33,10 +33,79 @@ sources:
           - name: state
           - name: _fivetran_synced
 
+      
+      - name: fact_orders
+        columns:
+          - name: id_order
+            tests:
+              - not_null
+              - unique
+          - name:  id_address
+            tests:
+              - relationships:
+                    to: ref('dim_addresses')
+                    field: id_address
+          - name: created_at_date
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: created_at_time_utc
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
+          - name: id_promo
+            tests:
+              - relationships:
+                    to: ref('dim_promo')
+                    field: id_promo
+          - name: estimated_delivery_at_date
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: estimated_delivery_at_time_utc
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
+          - name: order_cost_euros
+            tests:
+              - positive_values
+          - name: id_user
+            tests:
+              - relationships:
+                    to: ref('dim_users')
+                    field: id_user
+          - name: order_total_euros
+            tests:
+              - positive_values
+          - name: delivered_at_date
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: delivered_at_time_utc
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
+          - name: id_tracking
+          - name: id_status
+            tests:
+              - relationships:
+                    to: ref('dim_status')
+                    field: id_status
+          - name: _fivetran_synced
+       
+                   
+
       - name: fact_events
         columns:
           - name: id_event
             tests:
+              - unique
               - not_null 
           - name: page_url
           - name: event_type
@@ -45,13 +114,11 @@ sources:
               - relationships:
                     to: ref('dim_users')
                     field: id_user
-                    where: id_user<>0 or no null
           - name: id_product
             tests:
               - relationships:
                     to: ref('dim_products')
                     field: id_ product
-                    where: id_product<>0 or not null
           - name: id_session
             tests:
               - not_null
@@ -68,9 +135,8 @@ sources:
           - name: id_order
             tests:
               - relationships:
-                    to: ref('dim_order_items')
+                    to: ref('fact_orders')
                     field: id_order
-                    where: id_order<>0 
           - name: order_products
           - name: _fivetran_synced
 
@@ -79,11 +145,14 @@ sources:
         columns:
           - name: id_order
             tests:
-              - relationships:
-                    to: ref('dim_orders_product')
+               - relationships:
+                    to: ref('fact_orders')
                     field: id_order
-                    where: id_order<>0 or not null
           - name: id_product
+            tests:
+              - relationships:
+                    to: ref('dim_products')
+                    field: id_product
           - name: order_products
           - name: quantity
           - name: id_promo
@@ -91,19 +160,17 @@ sources:
               - relationships:
                     to: ref('dim_promos')
                     field: id_promo
-                    where: id_promo<>0 or not null  
           - name: id_status
             tests:
               - relationships:
                     to: ref('dim_status')
                     field: id_status
-                    where: id_status<>0 or not null
           - name: id_user
             tests:
               - relationships:
                     to: ref('dim_users')
                     field: id_user
-                    where: id_user<>0 or not null
+                   
           - name: order_cost_euros
             tests:
               - positive_values
@@ -131,6 +198,9 @@ sources:
       - name: dim_promos
         columns:
           - name: id_promo
+            tests:
+              - unique
+              - not_null   
           - name: desc_id_promo
           - name: discount
           - name: status
@@ -140,13 +210,36 @@ sources:
       - name: dim_users
         columns:
           - name: id_user
+            tests:
+              - unique
+              - not_null   
           - name: updated_at_date
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
           - name: updated_at_time_utc
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
           - name: id_address
+            tests:
+              - relationships:
+                    to: ref('dim_address')
+                    field: id_address
           - name: last_name
           - name: total_order
           - name: created_at_date
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
           - name: created_at_time_utc
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
           - name: phone_number
           - name: first_name
           - name: email
@@ -173,17 +266,52 @@ sources:
       - name: dim_shipping
         columns:
           - name: id_order
+            tests:
+              - relationships:
+                    to: ref('fact_oders_products')
+                    field: id_order
+          - name: id_shipping_service
+            tests:
+              - unique
+              - not_null 
           - name: shipping_service
           - name: shipping_cost_euros
           - name: id_address
+            tests:
+              - relationships:
+                    to: ref('dim_address')
+                    field: id_address
           - name: id_tracking
           - name: id_status
+            tests:
+              - relationships:
+                    to: ref('dim_status')
+                    field: id_status
           - name: created_at_date
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
           - name: created_at_time_utc
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
           - name: estimated_delivery_at_date
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
           - name: estimated_delivery_at_time_utc
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
 
 
       - name: dim_status
         columns:
           - name: id_status
+            tests:
+              - unique 
+              - not_null 

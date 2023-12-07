@@ -6,7 +6,7 @@ renamed2 as(
 
         select
         orders.id_order,
-        id_product,
+        oi.id_product,
         order_products,
         quantity,
         promos.id_promo,
@@ -18,14 +18,12 @@ renamed2 as(
     from {{ ref("stg_orders") }} orders
      left join {{ ref('stg_promos')}} promos
     on orders.id_promo=promos.id_promo
-    left join {{ ref('stg_order_items')}} oi
+    left join {{ref ('stg_order_items')}} oi 
     on orders.id_order=oi.id_order
-
 
 
 )
 
 select * from renamed2
-
 
 

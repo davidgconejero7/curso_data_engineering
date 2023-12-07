@@ -12,7 +12,7 @@ with
         id_session,
         events.created_at_date,
         events.created_at_time_utc,
-        order_items.id_order,
+        orders.id_order,
         events.order_products,
         events._fivetran_synced
 
@@ -21,10 +21,12 @@ with
     on events.id_user= users.id_user
     left join {{ ref('stg_products') }} products
     on events.id_product=products.id_product
-    left join {{ ref('stg_order_items') }} order_items
-    on events.id_order=order_items.id_order
+    left join {{ ref('stg_orders') }} orders
+    on events.id_order=orders.id_order
     left join {{ ref('stg_date')}} date
     on events.created_at_date=date.date
+    left join {{ ref("stg_time") }} time
+    on events.created_at_time_utc=time.time
 ),
 
 

@@ -5,10 +5,10 @@ with
     renamed as (
 
         select
-        id_order,
         id_shipping_service,
         shipping_service,
         shipping_cost_euros,
+        id_order,
         id_address,
         id_tracking,
         id_status,
@@ -20,6 +20,9 @@ with
         from {{ ref("stg_orders") }} orders 
         left join {{ ref("stg_date") }} date
         on orders.created_at_date=date.date
+        left join {{ ref("stg_time") }} time
+        on orders.created_at_time_utc=time.time
+
     
     )
  

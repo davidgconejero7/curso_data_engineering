@@ -20,11 +20,11 @@ renamed as (
         updated_at_time_utc,
         users.id_address,
         last_name,
+        first_name,
         total_order,
         users.created_at_date,
         users.created_at_time_utc,
         phone_number,
-        first_name,
         email,
         users._fivetran_synced
 
@@ -35,6 +35,8 @@ renamed as (
     on users.id_user=orders.id_user
     left join total_order
     on users.id_user=total_order.id_user
+    left join {{ ref("stg_time") }} time
+    on users.created_at_time_utc=time.time
 
 
 )

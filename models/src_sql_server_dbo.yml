@@ -132,10 +132,12 @@ sources:
         loaded_at_field: _fivetran_synced
         columns:
           - name: concat(order_id,product_id)
+            description: "Identificador único de la order con un producto específico"
             tests:
               - not_null 
               - unique
           - name: quantity
+            description: "Cantidad de un producto dentro de una order específica"
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -143,15 +145,19 @@ sources:
         loaded_at_field: _fivetran_synced
         columns:
           - name: product_id
+            description: "Identificador único para un tipo de producto"
             tests:
               - not_null
               - unique 
           - name: price
+            description: "Valor del producto"
             tests:
              - dbt_utils.expression_is_true:
                    expression: ">=0"
           - name: name
+            description: "Nombre del producto"
           - name: inventory
+            description: "Cantidad del producto"
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -159,14 +165,17 @@ sources:
         loaded_at_field: _fivetran_synced
         columns:
           - name: promo_id
+            description: "Identificador único para una promoción"
             tests:
               - not_null
               - unique 
           - name: discount
+            description: "Descuento de una promoción"
             tests:
              - dbt_utils.expression_is_true:
                    expression: ">=0"
           - name: status
+            description: "Estado en el cual se encuentra una promoción"
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -174,20 +183,28 @@ sources:
         loaded_at_field: _fivetran_synced
         columns:
           - name: user_id
+            description: "Identificador único de un usuario"
             tests:
               - not_null
               - unique 
           - name: update_at
+            description: "Fecha de actualización de un usuario"
           - name: address_id
+            description: "Identificador de dirección del usuario"
             tests: 
               - relationships:
                     to: ref('addresses')
                     field: address_id 
           - name: last_name
-          - name: created_at
-          - name: phone_number
-          - name: total_orders
+            description: "Campo que contiene el apellido del usuario"
           - name: first_name
+            description: "Campo que contiene el nombre del usuario"
+          - name: created_at
+            description: "Fecha de creación de un usuario"
+          - name: phone_number
+            description: "Campo que contiene el número telefónico de un usuario"
+          - name: total_orders
           - name: email
+            description: "Campo que contiene la información de email de un usuario"
           - name: _fivetran_deleted
           - name: _fivetran_synced
