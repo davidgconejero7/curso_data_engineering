@@ -117,7 +117,7 @@ sources:
             tests:
               - relationships:
                     to: ref('dim_products')
-                    field: id_ product
+                    field: id_product
           - name: id_session
             tests:
               - not_null
@@ -136,6 +136,7 @@ sources:
               - relationships:
                     to: ref('fact_orders')
                     field: id_order
+                    where: id_order<> 'not orders'
           - name: order_products
           - name: _fivetran_synced
 
@@ -153,6 +154,8 @@ sources:
                     to: ref('dim_products')
                     field: id_product
           - name: order_products
+            tests:
+              - unique 
           - name: quantity
           - name: id_promo
             tests:

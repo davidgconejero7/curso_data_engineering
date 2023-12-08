@@ -1,14 +1,17 @@
 
 with 
 
-    renamed as (
+    source as (select * from {{ ref("stg_events") }}),
+
+
+renamed as (
 
     select
         id_event,
         page_url,
         event_type,
         users.id_user,
-        events.id_product,
+        products.id_product,
         id_session,
         events.created_at_date,
         events.created_at_time_utc,
@@ -30,7 +33,7 @@ with
 ),
 
 
-    not_null as (
+not_null as (
 
     select
         id_event,
@@ -42,7 +45,6 @@ with
         created_at_date,
         created_at_time_utc,
         decode(id_order, null , 'not orders', id_order) as id_order,
-        order_products,
         _fivetran_synced
 
     from renamed

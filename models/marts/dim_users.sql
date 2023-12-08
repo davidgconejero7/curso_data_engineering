@@ -15,17 +15,17 @@ total_order as(
 renamed as (
 
     select
-        users.id_user,
-        updated_at_date,
-        updated_at_time_utc,
-        users.id_address,
+        distinct(users.id_user),
         last_name,
         first_name,
-        total_order,
-        users.created_at_date,
-        users.created_at_time_utc,
+        users.id_address,
         phone_number,
         email,
+        total_order,
+        updated_at_date,
+        updated_at_time_utc,
+        users.created_at_date,
+        users.created_at_time_utc,
         users._fivetran_synced
 
     from {{ ref('stg_users') }} users
