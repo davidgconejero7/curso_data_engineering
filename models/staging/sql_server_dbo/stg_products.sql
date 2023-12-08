@@ -1,16 +1,6 @@
-{{ config(
-    materialized='incremental'
-    ) 
-    }}
 
-with source as (select * from {{ source('sql_server_dbo', 'products') }}
 
-{% if is_incremental() %}
-
-	  where _fivetran_synced > (select max(dbt_fivetran_synced) from {{ this }})
-
-{% endif %}
-    ),
+with source as (select * from {{ source('sql_server_dbo', 'products') }},
 
 renamed as (
 

@@ -44,8 +44,9 @@ sources:
               - not_null
               - unique
           - name: event_type
-          - name: page_url
             description: "Identificador del tipo de evento"
+          - name: page_url
+            description: "Identificador de la url del evento"
           - name: user_id
             description: "Usuario que ha realizado el tipo de evento"
             tests:
@@ -125,6 +126,9 @@ sources:
             description: " Identificador de seguimiento para nuestra order"
           - name: status
             description: "Estado de nuestra order"
+            tests:
+              - accepted_values:
+                  values: ['delivered','preparing','shipped']
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
@@ -176,6 +180,9 @@ sources:
                    expression: ">=0"
           - name: status
             description: "Estado en el cual se encuentra una promoción"
+            tests:
+              - accepted_values:
+                  values: ['inactive','active']
           - name: _fivetran_deleted
           - name: _fivetran_synced
 

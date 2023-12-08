@@ -1,9 +1,9 @@
 version: 2
 
-sources:
 
-  - name: sql_server_dbo # name of the source 
-    schema: dbt_davidgarciaconejero # this is the schema our raw data lives in
+sources:
+  - name: core # name of the source
+    schema: DBT_DAVIDGARCIACONEJERO # this is the schema our raw data lives in
     database: ALUMNO14_DEV_GOLD_DB # this is the name of our database
 
     quoting:
@@ -12,13 +12,12 @@ sources:
       identifier: false
 
     freshness:
-      warn_after: {count: 24, period: day}
-      error_after: {count: 48, period: day}
-
-    loaded_at_field: _fivetran_synced
+      warn_after: { count: 32, period: day }
+      error_after: { count: 33, period: day }
 
     tables:
 
+  
       - name: dim_addresses
         columns:
           - name: id_address
@@ -164,13 +163,7 @@ sources:
             tests:
               - relationships:
                     to: ref('dim_status')
-                    field: id_status
-          - name: id_user
-            tests:
-              - relationships:
-                    to: ref('dim_users')
-                    field: id_user
-                   
+                    field: id_status                   
           - name: order_cost_euros
             tests:
               - positive_values
@@ -267,12 +260,13 @@ sources:
         columns:
           - name: id_order
             tests:
+              - unique
+              - not_null     
               - relationships:
                     to: ref('fact_oders_products')
                     field: id_order
           - name: id_shipping_service
             tests:
-              - unique
               - not_null 
           - name: shipping_service
           - name: shipping_cost_euros

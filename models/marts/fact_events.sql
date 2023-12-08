@@ -30,7 +30,7 @@ with
 ),
 
 
-        not_null as (
+    not_null as (
 
     select
         id_event,
