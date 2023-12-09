@@ -29,13 +29,13 @@ renamed as (
         users._fivetran_synced
 
     from {{ ref('stg_users') }} users
-    left join {{ ref('stg_date')}} date
+    left join {{ ref('dim_date')}} date
     on users.created_at_date=date.date
     left join {{ ref("stg_orders") }} orders
     on users.id_user=orders.id_user
     left join total_order
     on users.id_user=total_order.id_user
-    left join {{ ref("stg_time") }} time
+    left join {{ ref("dim_time") }} time
     on users.created_at_time_utc=time.time
 
 

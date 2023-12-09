@@ -18,9 +18,9 @@ with
         estimated_delivery_at_time_utc
     
         from {{ ref("stg_orders") }} orders 
-        left join {{ ref("stg_date") }} date
+        left join {{ ref("dim_date") }} date
         on orders.created_at_date=date.date
-        left join {{ ref("stg_time") }} time
+        left join {{ ref("dim_time") }} time
         on orders.created_at_time_utc=time.time
 
     

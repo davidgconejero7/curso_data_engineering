@@ -26,9 +26,9 @@ renamed as (
     on events.id_product=products.id_product
     left join {{ ref('stg_orders') }} orders
     on events.id_order=orders.id_order
-    left join {{ ref('stg_date')}} date
+    left join {{ ref('dim_date')}} date
     on events.created_at_date=date.date
-    left join {{ ref("stg_time") }} time
+    left join {{ ref("dim_time") }} time
     on events.created_at_time_utc=time.time
 ),
 

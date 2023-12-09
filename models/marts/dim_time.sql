@@ -1,14 +1,19 @@
-with
+{{ config(
+  materialized='table'
+) }}
 
- source as (select * from {{ ref("stg_time") }}),
+WITH stg_time AS 
+(
+    {{ dbt_utils.date_spine(
+    datepart="second",
+    start_date="cast('00:00:00' as time)",
+    end_date="cast('23:59:59' as time)"
+   )
+}}
+)
 
- renamed as(
+SELECT
+      date_second AS time,
+      extract (hour from date_second) AS hour_time
 
-select
-      time,
-      hour_time
-
-    from source
- )
-
-select*from renamed
+FROM stg_time
