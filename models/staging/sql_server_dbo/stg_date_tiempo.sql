@@ -1,6 +1,17 @@
-with 
+{{ config(
+    materialized='incremental'
+    ) 
+    }}
 
-source as (select * from {{ source('sql_server_dbo', 'date_tiempo') }}),
+WITH stg_incremental_tiempo AS (
+    SELECT * 
+    FROM {{ source ('sql_server_dbo','date_tiempo') }}
+{% if is_incremental() %}
+
+	  where _fivetran_synced > (select max(_fivetran_synced) from {{ this }})
+
+{% endif %}
+    ),
 
 renamed as (
 
@@ -12,7 +23,7 @@ renamed as (
         date,
         _fivetran_synced
 
-    from source
+    from stg_incremental_tiempo
 
 )
 
