@@ -40,7 +40,7 @@ not_null as (
         page_url,
         event_type,
         id_user,
-        id_product,
+        decode(id_product, null , 'not products', id_product) as id_product,
         id_session,
         created_at_date,
         created_at_time_utc,

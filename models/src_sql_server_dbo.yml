@@ -20,7 +20,7 @@ sources:
         loaded_at_field: _fivetran_synced
         columns:
           - name: address_id
-            description: "Identificador unico de las direcciones"
+            description: "Identificador único de las direcciones"
             tests:
               - not_null
               - unique 
@@ -36,6 +36,7 @@ sources:
           - name: _fivetran_synced
 
       - name: events
+        description: "Tabla de eventos"
         loaded_at_field: _fivetran_synced
         columns:
           - name: event_id
@@ -75,6 +76,7 @@ sources:
           - name: _fivetran_synced
 
       - name: orders
+        description: "Tabla de pedidos"
         loaded_at_field: _fivetran_synced
         columns:
           - name: order_id
@@ -110,6 +112,7 @@ sources:
           - name: order_cost
             description: "Coste de la order"
           - name: user_id
+            description: "Identificador user para nuestra order"
             tests:
               - not_null
               - relationships:
@@ -133,6 +136,7 @@ sources:
           - name: _fivetran_synced
 
       - name: order_items
+        description: "Tabla de pedidos"
         loaded_at_field: _fivetran_synced
         columns:
           - name: concat(order_id,product_id)
@@ -146,6 +150,7 @@ sources:
           - name: _fivetran_synced
 
       - name: products
+        description: "Tabla de productos"
         loaded_at_field: _fivetran_synced
         columns:
           - name: product_id
@@ -166,6 +171,7 @@ sources:
           - name: _fivetran_synced
 
       - name: promos
+        description: "Tabla de promos"
         loaded_at_field: _fivetran_synced
         columns:
           - name: promo_id
@@ -187,6 +193,7 @@ sources:
           - name: _fivetran_synced
 
       - name: users
+        description: "Tabla de usuarios"
         loaded_at_field: _fivetran_synced
         columns:
           - name: user_id
@@ -217,20 +224,26 @@ sources:
           - name: _fivetran_synced
 
       - name: date_tiempo
+        description: "Tabla del tiempo"
         columns:
           - name: zip_code
+            description: "Código postal"
             tests:
               - unique
               - not_null
           - name: temperature
+            description: "Temperatura"
             tests:
               - not_null
           - name: wind_speed
+            description: "Velocidad el viento"
             tests:
               - not_null
           - name: humidity
+            description: "Humedad"
             tests:
               - not_null
           - name: date
+            description: "Fecha"
           - name: _fivetrand_synced
          
