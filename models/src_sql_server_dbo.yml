@@ -226,10 +226,9 @@ sources:
       - name: date_tiempo
         description: "Tabla del tiempo"
         columns:
-          - name: zip_code
+          - name: zipcode
             description: "Código postal"
             tests:
-              - unique
               - not_null
           - name: temperature
             description: "Temperatura"

@@ -11,7 +11,7 @@ renamed as (
         page_url,
         event_type,
         users.id_user,
-        products.id_product,
+        events.id_product,
         id_session,
         events.created_at_date,
         events.created_at_time_utc,

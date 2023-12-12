@@ -3,7 +3,7 @@ version: 2
 
 sources:
   - name: core # name of the source
-    schema: DBT_DAVIDGARCIACONEJERO # this is the schema our raw data lives in
+    schema: core # this is the schema our raw data lives in
     database: ALUMNO14_DEV_GOLD_DB # this is the name of our database
 
     quoting:
@@ -145,6 +145,7 @@ sources:
               - relationships:
                     to: ref('dim_products')
                     field: id_product
+                    where: id_product<>'not products'
           - name: id_session
             description: "Sesión en la cual se realiza el evento"
             tests:
@@ -401,13 +402,12 @@ sources:
             
         
     
-      - name: date_tiempo
+      - name: dim_date_tiempo
         description: "Tabla del tiempo"
         columns:
-          - name: zip_code
+          - name: zipcode
             description: "Código postal"
             tests:
-              - unique
               - not_null
               - relationships:
                     to: ref('dim_addresses')

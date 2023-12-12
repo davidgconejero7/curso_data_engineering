@@ -5,7 +5,7 @@ with
     renamed as (
 
         select
-            dt.zipcode,
+            distinct(dt.zipcode),
             temperature,
             wind_speed,
             humidity,
