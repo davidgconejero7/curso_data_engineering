@@ -1,18 +1,29 @@
-with
+{{ config(
+    materialized='incremental'
+    ) 
+    }}
 
- source as (select * from {{ ref("stg_date_tiempo") }}),
+WITH dim_incremental_tiempo AS (
+    SELECT * 
+    FROM {{ ref ('stg_date_tiempo') }}
+{% if is_incremental() %}
+
+	  where _fivetran_synced > (select max(_fivetran_synced) from {{ this }})
+
+{% endif %}
+    ),
    
     renamed as (
 
         select
-            distinct(dt.zipcode),
+            dt.zipcode,
             temperature,
             wind_speed,
             humidity,
             dt.date,
             dt._fivetran_synced
 
-        from {{ ref("stg_date_tiempo") }} dt
+        from dim_incremental_tiempo dt
         left join  {{ ref("stg_addresses") }} ad 
         on dt.zipcode=ad.zipcode
         left join {{ ref("dim_date") }} dat 

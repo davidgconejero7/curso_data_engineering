@@ -145,7 +145,7 @@ sources:
               - relationships:
                     to: ref('dim_products')
                     field: id_product
-                    where: id_product<>'not products'
+                    where: id_product<>'not id_product'
           - name: id_session
             description: "Sesión en la cual se realiza el evento"
             tests:
