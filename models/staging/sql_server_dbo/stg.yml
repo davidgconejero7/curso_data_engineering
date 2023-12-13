@@ -1,22 +1,6 @@
 version: 2
 
-sources:
-
-  - name: sql_server_dbo # name of the source 
-    schema: sql_server_dbo # this is the schema our raw data lives in
-    database: ALUMNO14_DEV_SILVER_DB # this is the name of our database
-
-    quoting:
-      database: false
-      schema: false
-      identifier: false
-
-    freshness:
-      warn_after: {count: 24, period: day}
-      error_after: {count: 48, period: day}
-
-
-    tables:
+models:
 
       - name: stg_addresses
         description: "Tabla de direcciones"

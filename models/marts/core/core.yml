@@ -1,21 +1,7 @@
 version: 2
 
 
-sources:
-  - name: core # name of the source
-    schema: core # this is the schema our raw data lives in
-    database: ALUMNO14_DEV_GOLD_DB # this is the name of our database
-
-    quoting:
-      database: false
-      schema: false
-      identifier: false
-
-    freshness:
-      warn_after: { count: 32, period: day }
-      error_after: { count: 33, period: day }
-
-    tables:
+models:
 
   
       - name: dim_addresses

@@ -1,6 +1,17 @@
+{{ config(
+    materialized='incremental'
+    ) 
+    }}
 
+WITH stg_incremental_product AS (
+    SELECT * 
+    FROM {{ source ('sql_server_dbo','products') }}
+{% if is_incremental() %}
 
-with source as (select * from {{ source('sql_server_dbo', 'products') }}),
+	  where _fivetran_synced > (select max(_fivetran_synced) from {{ this }})
+
+{% endif %}
+    ),
 
 renamed as (
 
@@ -12,7 +23,7 @@ renamed as (
         _fivetran_deleted,
         _fivetran_synced
 
-    from source
+    from stg_incremental_product
 
 )
 
