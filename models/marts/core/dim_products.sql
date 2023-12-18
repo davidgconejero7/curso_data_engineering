@@ -10,7 +10,6 @@ renamed as (
         price_euro,
         name,
         inventory,
-        _fivetran_deleted,
         _fivetran_synced
 
     from source

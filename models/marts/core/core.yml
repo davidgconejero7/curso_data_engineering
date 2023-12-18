@@ -1,0 +1,419 @@
+version: 2
+
+
+models:
+
+  
+      - name: dim_addresses
+        description: "Tabla de direcciones"
+        columns:
+          - name: id_address
+            description: "Identificador único de las direcciones"
+            tests:
+              - not_null
+              - unique 
+          - name: zipcode
+            description: "Código postal de las direcciones"
+            tests:
+              - positive_values
+          - name: country
+            description: "País donde se encuentran las direcciones"
+          - name: address
+            description: "Nombre de la calle de las direcciones"
+          - name: state
+            description: "Estado en el que se encuentran las direcciones"
+          - name: _fivetran_synced
+
+      
+      - name: fact_orders
+        description: "Tabla de pedidos"
+        columns:
+          - name: id_order
+            description: "Identificador para un determinado pedido"
+            tests:
+              - not_null
+              - unique
+          - name:  id_address
+            description: "Identificador de address para esta order concreta"
+            tests:
+              - relationships:
+                    to: ref('dim_addresses')
+                    field: id_address
+          - name: created_at_date
+            description: "Fecha en la que se creo la order"
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: created_at_time_utc
+            description: "Hora en la que se creo la order"
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
+          - name: id_promo
+            description: "Identificador de la promoción que se aplica a la order"
+            tests:
+              - relationships:
+                    to: ref('dim_promo')
+                    field: id_promo
+          - name: estimated_delivery_at_date
+            description: "Fecha en la que se espera la llegada de la order"
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: estimated_delivery_at_time_utc
+            description: "Hora en la que se espera la llegada de la order"
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
+          - name: order_cost_euros
+            description: "Coste de la order en euros"
+            tests:
+              - positive_values
+          - name: id_user
+            description: "Identificador user para nuestra order"
+            tests:
+              - relationships:
+                    to: ref('dim_users')
+                    field: id_user
+          - name: order_total_euros
+            description: "Coste toal de la order, incluido el envio"
+            tests:
+              - positive_values
+          - name: delivered_at_date
+            description: "Fecha de llegada de la order"
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: delivered_at_time_utc
+            description: "Hora de llegada de la order"
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
+          - name: id_tracking
+            description: " Identificador de seguimiento para nuestra order"
+          - name: id_status
+            description: "Estado de nuestra order"
+            tests:
+              - relationships:
+                    to: ref('dim_status')
+                    field: id_status
+          - name: _fivetran_synced
+       
+                   
+
+      - name: fact_events
+        description: "Tabla de eventos"
+        columns:
+          - name: id_event
+            description: "Identificador único del evento"
+            tests:
+              - unique
+              - not_null 
+          - name: page_url
+            description: "Identificador de la url del evento"
+          - name: event_type
+            description: "Identificador del tipo de evento"
+          - name: id_user
+            description: "Usuario que ha realizado el tipo de evento"
+            tests:
+              - relationships:
+                    to: ref('dim_users')
+                    field: id_user
+          - name: id_product
+            description: "Identificador del producto para nuestro evento"
+            tests:
+              - relationships:
+                    to: ref('dim_products')
+                    field: id_product
+                    where: id_product<>'not id_product'
+          - name: id_session
+            description: "Sesión en la cual se realiza el evento"
+            tests:
+              - not_null
+          - name: created_at_date
+            description: "Fecha de creación"
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: created_at_time_utc
+            description: "Hora de creación"
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
+          - name: id_order
+            description: "Identificador de order para nuestro evento"
+            tests:
+              - relationships:
+                    to: ref('fact_orders')
+                    field: id_order
+                    where: id_order<> 'not orders'
+          - name: order_products
+            description: "Concatenacion id_order con id_products"
+          - name: _fivetran_synced
+
+
+      - name: fact_orders_products
+        description: "Tabla de pedidos"
+        columns:
+          - name: id_order
+            description: "Identificador único de la order específico"
+            tests:
+               - relationships:
+                    to: ref('fact_orders')
+                    field: id_order
+          - name: id_product
+            description: "Identificador único del producto específico"
+            tests:
+              - relationships:
+                    to: ref('dim_products')
+                    field: id_product
+          - name: order_products
+            description: "Identificador único de la order con un producto específico"
+            tests:
+              - unique 
+          - name: quantity
+            description: "Cantidad de un producto dentro de una order específica"
+          - name: id_promo
+            description: "Id de una promo especifica"
+            tests:
+              - relationships:
+                    to: ref('dim_promos')
+                    field: id_promo
+          - name: id_status
+            description: "Id de un status especifica"
+            tests:
+              - relationships:
+                    to: ref('dim_status')
+                    field: id_status                   
+          - name: order_cost_euros
+            description: "Coste de la order en euros"
+            tests:
+              - positive_values
+          - name: order_total_euros
+            description: "Coste toal de la order, incluido el envio"
+            tests:
+              - positive_values
+          - name: _fivetran_synced
+
+     
+      - name: dim_products
+        description: "Tabla de productos"
+        columns:
+          - name: id_product
+            description: "Identificador único para un tipo de producto"
+            tests:
+              - unique
+              - not_null    
+          - name: price_euro
+            description: "Valor del producto en euros"
+            tests:
+              - positive_values
+          - name: name
+            description: "Nombre del producto"
+          - name: inventory
+            description: "Cantidad del producto"
+            tests:
+              - positive_values
+          - name: _fivetran_synced
+
+      - name: dim_promos
+        description: "Tabla de promos"
+        columns:
+          - name: id_promo
+            description: "Identificador único para una promoción"
+            tests:
+              - unique
+              - not_null   
+          - name: desc_id_promo
+            description: "Nombre de la promoción"
+          - name: discount
+            description: "Descuento de una promoción"
+          - name: status
+            description: "Estado en el cual se encuentra una promoción"
+          - name: _fivetran_synced
+
+
+      - name: dim_users
+        description: "Tabla de usuarios"
+        columns:
+          - name: id_user
+            description: "Identificador único de un usuario"
+            tests:
+              - unique
+              - not_null   
+          - name: updated_at_date
+            description: "Fecha de actualización de un usuario"
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: updated_at_time_utc
+            description: "Hora de actualización de un usuario"
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
+          - name: id_address
+            description: "Identificador de dirección del usuario"
+            tests:
+              - relationships:
+                    to: ref('dim_address')
+                    field: id_address
+          - name: last_name
+            description: "Campo que contiene el apellido del usuario"
+          - name: total_order
+          - name: created_at_date
+            description: "Fecha de creación de un usuario"
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: created_at_time_utc
+            description: "Hora de creación de un usuario"
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
+          - name: phone_number
+            description: "Campo que contiene el número telefónico de un usuario"
+          - name: first_name
+            description: "Campo que contiene el nombre del usuario"
+          - name: email
+            description: "Campo que contiene la información de email de un usuario"
+          - name: _fivetran_synced
+
+          
+      - name: dim_date
+        description: "Tabla de fechas"
+        columns:
+          - name: date
+            description: "Fecha"
+          - name: day_of_week
+            description: "Día de la seman"
+          - name: day_of_month
+            description: "Día del mes"
+          - name: week_of_year
+            description: "Semana del año"
+          - name: month_of_year
+            description: "Mes del año"
+          - name: year_number
+            description: "Año"
+          - name: quarter_of_the_year
+
+      
+      - name: dim_time
+        description: "Tabla de horarios"
+        columns:
+          - name: time
+            description: "Hora, minutos y segundo"
+          - name: hour_time
+            description: "Hora"
+
+     
+      - name: dim_shipping
+        description: "Tabla descripción de order en función del shipping"
+        columns:
+          - name: id_order
+            description: "Identificador para un determinado pedido"
+            tests:
+              - unique
+              - not_null     
+              - relationships:
+                    to: ref('fact_oders_products')
+                    field: id_order
+          - name: id_shipping_service
+            description: "Id de la compañia de envíos"
+            tests:
+              - not_null 
+          - name: shipping_service
+            description: "Nombre de la compañia de envíos"
+          - name: shipping_cost_euros
+            description: "Costo total de la compañia de sus envíos en euros"
+          - name: id_address
+            description: "Identificador de address para esta order concreta"
+            tests:
+              - relationships:
+                    to: ref('dim_address')
+                    field: id_address
+          - name: id_tracking
+            description: " Identificador de seguimiento para nuestra order"
+          - name: id_status
+            description: "Estado de nuestra order"
+            tests:
+              - relationships:
+                    to: ref('dim_status')
+                    field: id_status
+          - name: created_at_date
+            description: "Fecha de creación"
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: created_at_time_utc 
+            description: "Hora de creación"
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
+          - name: estimated_delivery_at_date
+            description: "Fecha estimada de llegada"
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: estimated_delivery_at_time_utc
+            description: "Hora estimada de llegada"
+            tests:
+              - relationships:
+                    to: ref('dim_time')
+                    field: time
+
+
+      - name: dim_status
+        description: "Tabla de estado de los productos"
+        columns:
+          - name: id_status
+            description: "Id único de los estados"
+            tests:
+              - unique 
+              - not_null 
+            
+        
+    
+      - name: dim_date_tiempo
+        description: "Tabla del tiempo"
+        columns:
+          - name: zipcode
+            description: "Código postal"
+            tests:
+              - not_null
+              - relationships:
+                    to: ref('dim_addresses')
+                    field: zipcode
+          - name: temperature
+            description: "Temperatura"
+            tests:
+              - not_null
+          - name: wind_speed
+            description: "Velocidad el viento"
+            tests:
+              - not_null
+          - name: humidity
+            description: "Humedad"
+            tests:
+              - not_null
+          - name: date
+            description: "Fecha"
+            tests:
+              - relationships:
+                    to: ref('dim_date')
+                    field: date
+          - name: _fivetrand_synced

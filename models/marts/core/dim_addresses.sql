@@ -1,19 +1,18 @@
 with
 
- source as (select * from {{ source("sql_server_dbo", "addresses") }}),
+ source as (select * from {{ ref("stg_addresses") }}),
    
     renamed as (
 
         select
-            address_id as id_address,
+            id_address,
             zipcode,
             country,
             address,
             state,
-            _fivetran_deleted,
             _fivetran_synced
 
-        from source
+        from source 
        
     )
 

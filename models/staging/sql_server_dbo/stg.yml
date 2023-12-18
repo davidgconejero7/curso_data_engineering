@@ -1,229 +1,248 @@
 version: 2
 
-sources:
-  - name: sql_server_dbo # name of the source
-    schema: sql_server_dbo # this is the schema our raw data lives in
-    database: ALUMNO14_DEV_BRONZE_DB   # this is the name of our database
+models:
 
-    quoting:
-      database: false
-      schema: false
-      identifier: false
-
-    freshness:
-      warn_after: { count: 24, period: hour }
-      error_after: { count: 48, period: hour }
-
-    tables:
-      - name: addresses
+      - name: stg_addresses
         description: "Tabla de direcciones"
-        loaded_at_field: _fivetran_synced
         columns:
-          - name: address_id
+          - name: id_address
             description: "Identificador único de las direcciones"
             tests:
+              - unique
               - not_null
-              - unique 
-          - name: zip_code
+          - name: zipcode
             description: "Código postal de las direcciones"
+            tests:
+              - not_null
           - name: country
             description: "País donde se encuentran las direcciones"
+            tests:
+              - not_null
           - name: address
             description: "Nombre de la calle de las direcciones"
+            tests:
+              - not_null
           - name: state
             description: "Estado en el que se encuentran las direcciones"
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      - name: events
+      - name: stg_events
         description: "Tabla de eventos"
-        loaded_at_field: _fivetran_synced
         columns:
-          - name: event_id
+          - name: id_event
             description: "Identificador único del evento"
             tests:
-              - not_null
               - unique
-          - name: event_type
-            description: "Identificador del tipo de evento"
+              - not_null
           - name: page_url
             description: "Identificador de la url del evento"
-          - name: user_id
+            tests:
+              - not_null
+          - name: event_type
+            description: "Identificador del tipo de evento"
+            tests:
+              - not_null
+          - name: id_user
             description: "Usuario que ha realizado el tipo de evento"
             tests:
-              - relationships:
-                    to: ref('users')
-                    field: user_id
-                    where: user_id<>0 or not null
-          - name: product_id
+              - not_null
+          - name: id_product
             description: "Identificador del producto para nuestro evento"
             tests:
-              - relationships:
-                    to: ref('products')
-                    field: product_id <>0 or not null
-          - name: session_id
+              - not_null
+          - name: id_session
             description: "Sesión en la cual se realiza el evento"
-          - name: created_at
+            tests:
+              - not_null
+          - name: created_at_date
             description: "Fecha de creación"
-          - name: order_id
+            tests:
+              - not_null
+          - name: created_at_time_utc
+            description: "Hora de creación"
+            tests:
+              - not_null
+          - name: id_order
             description: "Identificador de order para nuestro evento"
             tests:
-              - relationships:
-                    to: ref('order_items')
-                    field: order_id 
-                    where: order_id<>0 or not null
+              - not_null
+          - name: order_products
+            description: "Concatenacion id_order con id_products"
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      - name: orders
+
+      - name: stg_orders
         description: "Tabla de pedidos"
-        loaded_at_field: _fivetran_synced
         columns:
-          - name: order_id
+          - name: id_order
             description: "Identificador para un determinado pedido"
             tests:
+              - unique
               - not_null
-              - unique 
           - name: shipping_service
             description: "Nombre de la compañia de envíos"
-          - name: shipping_cost
+          - name: shipping_cost_euros
             description: "Costo total de la compañia de sus envíos"
             tests:
-             - dbt_utils.expression_is_true:
-                   expression: ">=0"
-          - name: address_id
+              - positive_values
+              - not_null
+          - name: id_address
             description: "Identificador de address para esta order concreta"
             tests:
               - not_null
-              - relationships:
-                    to: ref('addresses')
-                    field: address_id 
-          - name: created_at
+          - name: created_at_date
             description: "Fecha en la que se creo la order"
-          - name: promo_id
-            description: "Identificador de la promoción que se aplica a la order"
             tests:
-              - relationships:
-                    to: ref('promos')
-                    field: promo_id 
-                    where: promo_id<>0 or not null
-          - name: estimated_delivery_at
+              - not_null
+          - name: created_at_time_utc
+            description: "Hora en la que se creo la order"
+            tests:
+              - not_null
+          - name: id_promo
+            description: "Identificador de la promoción que se aplica a la order"
+          - name: estimated_delivery_at_date
             description: "Fecha en la que se espera la llegada de la order"
-          - name: order_cost
-            description: "Coste de la order"
-          - name: user_id
+          - name: estimated_delivery_at_time_utc
+            description: "Hora en la que se espera la llegada de la order"
+          - name: order_cost_euros
+            description: "Coste de la order en euros"
+            tests:
+              - not_null
+              - positive_values
+          - name: id_user
             description: "Identificador user para nuestra order"
             tests:
               - not_null
-              - relationships:
-                    to: ref('users')
-                    field: user_id 
-          - name: order_total
+          - name: order_total_euros
             description: "Coste toal de la order, incluido el envio"
             tests:
-             - dbt_utils.expression_is_true:
-                   expression: ">=0"
-          - name: delivered_at
+              - not_null
+              - positive_values
+          - name: delivered_at_date
             description: "Fecha de llegada de la order"
-          - name: tracking_id
-            description: " Identificador de seguimiento para nuestra order"
+          - name: delivered_at_time_utc
+            description: "Hora de llegada de la order"
+          - name: id_tracking
+            description: "Identificador de seguimiento para nuestra order"
           - name: status
             description: "Estado de nuestra order"
-            tests:
-              - accepted_values:
-                  values: ['delivered','preparing','shipped']
           - name: _fivetran_deleted
           - name: _fivetran_synced
-
-      - name: order_items
+          
+      - name: stg_order_items
         description: "Tabla de pedidos"
-        loaded_at_field: _fivetran_synced
         columns:
-          - name: concat(order_id,product_id)
-            description: "Identificador único de la order con un producto específico"
+          - name: id_order
+            description: "Identificador único de la order específico"
             tests:
-              - not_null 
-              - unique
+              - not_null
+          - name: id_product
+            description: "Identificador único del producto específico"
+            tests:
+              - relationships:
+                 to: ref('stg_products')
+                 field: id_product
+              - not_null
           - name: quantity
             description: "Cantidad de un producto dentro de una order específica"
+            tests:
+              - positive_values
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      - name: products
+      - name: stg_products
         description: "Tabla de productos"
-        loaded_at_field: _fivetran_synced
         columns:
-          - name: product_id
+          - name: id_product
             description: "Identificador único para un tipo de producto"
             tests:
+              - unique
               - not_null
-              - unique 
-          - name: price
-            description: "Valor del producto"
+          - name: price_euro
+            description: "Valor del producto en euros"
             tests:
-             - dbt_utils.expression_is_true:
-                   expression: ">=0"
+              - positive_values
+              - not_null
           - name: name
             description: "Nombre del producto"
+            tests:
+              - not_null
           - name: inventory
             description: "Cantidad del producto"
+            tests:
+              - positive_values
+              - not_null
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      - name: promos
+      - name: stg_promos
         description: "Tabla de promos"
-        loaded_at_field: _fivetran_synced
         columns:
-          - name: promo_id
+          - name: id_promo
             description: "Identificador único para una promoción"
             tests:
+              - unique
               - not_null
-              - unique 
           - name: discount
             description: "Descuento de una promoción"
             tests:
-             - dbt_utils.expression_is_true:
-                   expression: ">=0"
+              - positive_values
           - name: status
             description: "Estado en el cual se encuentra una promoción"
-            tests:
-              - accepted_values:
-                  values: ['inactive','active']
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      - name: users
+      - name: stg_users
         description: "Tabla de usuarios"
-        loaded_at_field: _fivetran_synced
         columns:
-          - name: user_id
+          - name: id_user
             description: "Identificador único de un usuario"
             tests:
+              - unique
               - not_null
-              - unique 
-          - name: update_at
+          - name: updated_at_date
             description: "Fecha de actualización de un usuario"
-          - name: address_id
+            tests:
+              - not_null
+          - name: updated_at_time_utc
+            description: "Hora de actualización de un usuario"
+            tests:
+              - not_null
+          - name: id_address
             description: "Identificador de dirección del usuario"
-            tests: 
-              - relationships:
-                    to: ref('addresses')
-                    field: address_id 
+            tests:
+              - not_null
           - name: last_name
             description: "Campo que contiene el apellido del usuario"
-          - name: first_name
-            description: "Campo que contiene el nombre del usuario"
-          - name: created_at
+            tests:
+              - not_null
+          - name: created_at_date
             description: "Fecha de creación de un usuario"
+          - name: created_at_time_utc
+            description: "Hora de creación de un usuario"
+            tests:
+              - not_null
           - name: phone_number
             description: "Campo que contiene el número telefónico de un usuario"
+            tests:
+              - not_null
           - name: total_orders
+          - name: first_name
+            description: "Campo que contiene el nombre del usuario"
+            tests:
+              - not_null
           - name: email
             description: "Campo que contiene la información de email de un usuario"
+            tests:
+              - not_null
           - name: _fivetran_deleted
           - name: _fivetran_synced
 
-      - name: date_tiempo
+
+        
+      - name: stg_date_tiempo
         description: "Tabla del tiempo"
         columns:
           - name: zipcode
@@ -245,4 +264,3 @@ sources:
           - name: date
             description: "Fecha"
           - name: _fivetrand_synced
-         

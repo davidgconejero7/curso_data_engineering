@@ -3,9 +3,9 @@
     ) 
     }}
 
-WITH stg_incremental_product AS (
+WITH stg_incremental_tiempo AS (
     SELECT * 
-    FROM {{ source ('sql_server_dbo','products') }}
+    FROM {{ source ('sql_server_dbo','date_tiempo') }}
 {% if is_incremental() %}
 
 	  where _fivetran_synced > (select max(_fivetran_synced) from {{ this }})
@@ -16,16 +16,15 @@ WITH stg_incremental_product AS (
 renamed as (
 
     select
-        product_id as id_product,
-        price as price_euro,
-        name,
-        inventory,
-        _fivetran_deleted,
+        zipcode,
+        temperature,
+        wind_speed,
+        humidity,
+        date,
         _fivetran_synced
 
-    from stg_incremental_product
+    from stg_incremental_tiempo
 
 )
 
 select * from renamed
-

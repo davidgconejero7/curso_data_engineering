@@ -1,15 +1,17 @@
 with 
 
+source as (
 
-   source as ( select * from {{ ref('base_order_items') }}),
+    select * from {{ source('sql_server_dbo', 'order_items') }}
 
+),
 
 renamed as (
 
     select
-        order_products,
-        id_product,
-        id_order,
+        concat(order_id,' - ',product_id) as order_products,
+        order_id as id_order,
+        product_id as id_product,
         quantity,
         _fivetran_deleted,
         _fivetran_synced
